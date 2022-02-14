@@ -373,8 +373,6 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
             Log.i(LOG_TAG, "regionDidEnter");
 
             sendEvent(mReactContext, "regionDidEnter", createMonitoringResponse(region));
-
-            //wakeUpAppIfNotRunning();
         }
 
         @Override
@@ -441,10 +439,6 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
             Log.d(LOG_TAG, "rangingConsumer didRangeBeaconsInRegion, beacons: " + beacons.toString());
             Log.d(LOG_TAG, "rangingConsumer didRangeBeaconsInRegion, region: " + region.toString());
             sendEvent(mReactContext, "beaconsDidRange", createRangingResponse(beacons, region));
-
-            if (!beacons.isEmpty()) {
-                wakeUpAppIfNotRunning();
-            }
         }
     };
 
@@ -599,19 +593,5 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
         }
 
         return false;
-    }
-
-    private void wakeUpAppIfNotRunning() {
-        Class intentClass = getMainActivityClass();
-        Boolean isRunning = isActivityRunning(intentClass);
-
-        if (!isRunning) {
-            Intent intent = new Intent(mApplicationContext, intentClass);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            // Important:  make sure to add android:launchMode="singleInstance" in the manifest
-            // to keep multiple copies of this activity from getting created if the user has
-            // already manually launched the app.
-            mApplicationContext.startActivity(intent);
-        }
     }
 }
